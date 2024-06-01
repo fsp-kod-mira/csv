@@ -13,8 +13,6 @@ import csv
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-
-
 grpc_port = os.environ.get('GRPC_IPPORT') or '0.0.0.0:50051'
 
 
@@ -43,9 +41,6 @@ class CsvMakerServicer(csv_maker_pb2_grpc.CsvMakerServicer):
 
 
 
-
-
-
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     csv_maker_pb2_grpc.add_CsvMakerServicer_to_server(CsvMakerServicer(), server)
@@ -60,36 +55,6 @@ def serve():
 
 
 
-
-
-
-
-
 if __name__ == "__main__":
     logger.info(f"Run server on {grpc_port}")
     serve()
-
-
-
-
-
-"""
-# Данные для записи в CSV-файл
-data = [
-    ['Имя', 'Возраст', 'Город'],
-    ['Анна', 25, 'Москва'],
-    ['Иван', 30, 'Санкт-Петербург'],
-    ['Елена', 35, 'Новосибирск']
-]
-
-# Имя CSV-файла для записи
-csv_filename = 'data.csv'
-
-# Запись данных в CSV-файл
-with open(csv_filename, 'w', newline='') as csvfile:
-    csv_writer = csv.writer(csvfile, delimiter=';')
-    for row in data:
-        csv_writer.writerow(row)
-
-print(f"CSV файл успешно создан: {csv_filename}")
-"""
