@@ -24,13 +24,16 @@ class CsvMakerServicer(csv_maker_pb2_grpc.CsvMakerServicer):
    def BuildCsv(self, request_iterator, context):
         logger.info(f"BuildCsv request")
         try:
+            yield csv_maker_pb2.StreamResponse(content=b'\xef\xbb\xbf')
+
             for extract_request in request_iterator:
                 logger.info(f"Received extract_request: \n {extract_request}")
                 output = io.StringIO()
                 writer = csv.writer(output, delimiter=';')
+
                 for data_row in extract_request.data_rows:
                     writer.writerow(data_row.row)
-                    yield csv_maker_pb2.StreamResponse(content=output.getvalue().encode())
+                    yield csv_maker_pb2.StreamResponse(content=output.getvalue().encode('utf-8'))
                     output.truncate(0)
                     output.seek(0)
                 
